@@ -14,7 +14,6 @@ def L2(vector):
             sumVal += (-vector[i]) ** 2
         else:
             sumVal += vector[i] ** 2
-        print(f"Val is {sumVal}")
     sumVal = sumVal ** 0.5
     return sumVal
 
