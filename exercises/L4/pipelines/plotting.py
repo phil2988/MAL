@@ -5,9 +5,8 @@ def plotModel(X, y, label = "No Label"):
 
     for i in range(len(X)):
         axs[i].plot(X[i], y[i])
-        axs.set_title([label[i]])
- 
-    # axs.xlabel("GDP per capita")
-    # axs.ylabel("Life satisfaction")
+        axs[i].set_title([label[i]])
+        axs[i].set_xlabel("GDP per capita")
+        axs[i].set_ylabel("Life satisfaction")
+    fig.tight_layout(pad=1)
     plt.show()
-# fig.subTitle("Models plotted side by side")
