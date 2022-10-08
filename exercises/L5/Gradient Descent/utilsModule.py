@@ -53,17 +53,25 @@ def plotMoreFigs(X, X_b, y, theta, n_epochs, m):
 
     X_new = np.array([[0], [2]])
     X_new_b = np.c_[np.ones((2, 1)), X_new]  # add x0 = 1 to each instance
-    sthocasticGradientDescent(X, y, X_b, X_new, X_new_b, theta, n_epochs, m)
+    
+    sthocasticGradientDescent(X, y, X_b, X_new, X_new_b, theta, n_epochs, m)             
 
-    plt.xlabel("$x_1$", fontsize=18)                     
-    plt.ylabel("$y$", rotation=0, fontsize=18)           
-    plt.axis([0, 2, 0, 15])                              
-
-    sgd_reg = SGDRegressor(max_iter=50, tol=-np.infty, penalty=None, eta0=0.1, random_state=42)
+    sgd_reg = SGDRegressor(
+        max_iter=50, 
+        tol=-np.infty, 
+        penalty=None, 
+        eta0=0.1, 
+        random_state=42, 
+        learning_rate="adaptive"
+    )
     sgd_reg.fit(X, y.ravel())
     print(f'stochastic gradient descent theta={theta.ravel()}')
     print(f'Scikit-learn SGDRegressor "thetas": sgd_reg.intercept_={sgd_reg.intercept_}, sgd_reg.coef_={sgd_reg.coef_}')
     
+    plt.xlabel("$x_1$", fontsize=18)                     
+    plt.ylabel("$y$", rotation=0, fontsize=18)           
+    plt.axis([0, 2, 0, 15])                              
+
     plt.show()        
 
 def sthocasticGradientDescent(X, y, X_b, X_new, X_new_b, theta, n_epochs, m):
