@@ -7,9 +7,8 @@ def loadExerciseDataAsXY():
         print("Done!")
         return X, y
 
-def dummyScaler(X_pre, y_pre):
+def dummyScaler(X_pre):
     import numpy as np
     # Inspiration for scaler "algorithm": https://stats.stackexchange.com/questions/70801/how-to-normalize-data-to-0-1-range
     X_scaled = (X_pre-min(X_pre))/(max(X_pre)-min(X_pre))
-    y_scaled = (y_pre-min(y_pre))/(max(y_pre)-min(y_pre))
-    return X_scaled, y_scaled
+    return X_scaled
