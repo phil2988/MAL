@@ -1,12 +1,8 @@
-# from sklearn.model_selection import train_test_split
-from helpers import MNIST_GetDataSetXy, SaverMNIST
-# import numpy as np
-# import tensorflow as tf
-# from tensorflow import keras
+from helpers import getMnistDataSet, Dataloader
 
-mnist_saver = SaverMNIST('dataset/train', 'dataset/test')
-mnist_saver.save()
-data = mnist_saver.get()
+dataloader = Dataloader('dataset/train', 'dataset/test', getMnistDataSet)
+dataloader.save()
+(X_train, y_train), (X_Test, y_test) = dataloader.get()
 print()
 
 # print("Fetching data...")

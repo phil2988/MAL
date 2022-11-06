@@ -9,9 +9,8 @@ import os
 import numpy as np
 import threading 
 
-def MNIST_GetDataSetXy():
-    print("Fetching Data...")
-    return fetch_openml('mnist_784', return_X_y=True, cache=False) 
+def getMnistDataSet():
+    return mnist.load_data()
 
 def make_dirs(path_list):
     for path in path_list:
@@ -24,8 +23,8 @@ def make_containing_dirs(path_list):
         if not os.path.exists(dir_name):
             os.makedirs(dir_name)
 
-class SaverMNIST():
-    def __init__(self, train_path, test_path):
+class Dataloader():
+    def __init__(self, train_path, test_path, loadDataFunction):
         
         self._image_format = '.png'
         self.paths = [train_path, test_path]
@@ -35,10 +34,7 @@ class SaverMNIST():
         file = os.path.exists(file_dir_name)
         if(not file):
             print("Did not find data. Downloading it now...")
-            def threadDownload():
-                self.data = mnist.load_data()
-
-            mnistThead = threading.Thread(threadDownload())
+            mnistThead = threading.Thread(loadDataFunction())
             mnistThead.start()
             mnistThead.join()            
 
