@@ -1,13 +1,13 @@
-from sklearn.model_selection import train_test_split
-from utils import MNIST_GetDataSetXy, SaverMNIST
-import numpy as np
+# from sklearn.model_selection import train_test_split
+from helpers import MNIST_GetDataSetXy, SaverMNIST
+# import numpy as np
 # import tensorflow as tf
 # from tensorflow import keras
 
-mnist_saver = SaverMNIST(image_train_path='dataset/train', image_test_path='dataset/test', csv_train_path='dataset/train.csv', csv_test_path='dataset/test.csv')
-
-# Write files into disk
-mnist_saver.run()
+mnist_saver = SaverMNIST('dataset/train', 'dataset/test')
+mnist_saver.save()
+data = mnist_saver.get()
+print()
 
 # print("Fetching data...")
 # X, y = MNIST_GetDataSetXy()
