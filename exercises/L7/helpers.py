@@ -24,7 +24,7 @@ def make_containing_dirs(path_list):
             os.makedirs(dir_name)
 
 class Dataloader():
-    def __init__(self, train_path, test_path, loadDataFunction):
+    def __init__(self, train_path, test_path):
         
         self._image_format = '.png'
         self.paths = [train_path, test_path]
@@ -32,56 +32,59 @@ class Dataloader():
         # Load MNIST dataset
         file_dir_name = str(self.paths[0] + "/0.png")
         file = os.path.exists(file_dir_name)
+        
+        X_train = []
+        y_train = []  
+        X_test = []
+        y_test = []
+
         if(not file):
-            print("Did not find data. Downloading it now...")
-            mnistThead = threading.Thread(loadDataFunction())
-            mnistThead.start()
-            mnistThead.join()            
+            def download():
+                self.data = fetch_openml('mnist_784', cache=False) 
 
-            print("Done!")
-        else: 
-            print("Files found in dataset folder. Skipping download")
+            print("DATALOADER: Did not find data. Downloading it now...")
+            mnistThread = threading.Thread(download())
+            mnistThread.start()
+            mnistThread.join()            
 
-            X_train = []
-            y_train = []  
-            X_test = []
-            y_test = []
-            
-            print("Reading data from pc...")
+            print("DATALOADER: Done!")
 
-            def tf1(): 
-                for _, __, files in os.walk(self.paths[0]):
-                    for file in files:
-                        X_train.append(np.array(Image.open(self.paths[0] + "/" + file)))
-                print("Done reading training data")
-            def tf2():
-                for _, __, files in os.walk(self.paths[1]):
-                    for file in files:
-                        X_test.append(np.array(Image.open(self.paths[1] + "/" + file)))
-                print("Done reading testing data")
+        print("DATALOADER: Files found in dataset folder. Skipping download")        
+        print("DATALOADER: Reading data from pc...")
 
-            def tf3():
-                with open("dataset/labels_train.csv") as file:
-                    for row in csv.reader(file, delimiter=" "):
-                        y_train.extend(row)
-                with open("dataset/labels_test.csv") as file:
-                    for row in csv.reader(file, delimiter=" "):
-                        y_test.extend(row)
-                print("Done reading labels")
+        def tf1(): 
+            for _, __, files in os.walk(self.paths[0]):
+                for file in files:
+                    X_train.append(np.array(Image.open(self.paths[0] + "/" + file)))
+            print("DATALOADER: Done reading training data")
+        def tf2():
+            for _, __, files in os.walk(self.paths[1]):
+                for file in files:
+                    X_test.append(np.array(Image.open(self.paths[1] + "/" + file)))
+            print("DATALOADER: Done reading testing data")
 
-            threads = [
-                threading.Thread(tf1()), 
-                threading.Thread(tf2()), 
-                threading.Thread(tf3())
-            ]
+        def tf3():
+            with open("dataset/labels_train.csv") as file:
+                for row in csv.reader(file, delimiter=" "):
+                    y_train.extend(row)
+            with open("dataset/labels_test.csv") as file:
+                for row in csv.reader(file, delimiter=" "):
+                    y_test.extend(row)
+            print("DATALOADER: Done reading labels")
 
-            print("Starting threads to read data...")
-            for thread in threads:
-                thread.start()
-            for thread in threads:
-                thread.join()
-    
-            print("Done!")
+        threads = [
+            threading.Thread(tf1()), 
+            threading.Thread(tf2()), 
+            threading.Thread(tf3())
+        ]
+
+        print("DATALOADER: Starting threads to read data...")
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+
+        print("DATALOADER: Done reading!")
         
         assert(len(X_train) == len(y_train) and len(X_train) == len(y_train))
         self.data = [
@@ -112,7 +115,7 @@ class Dataloader():
 
             assert(len(data_test) == len(labels_test) and len(data_train) == len(labels_train))
 
-            print("Writing data to files...")
+            print("DATALOADER: Writing data to files...")
             if(not(os.path.exists(self.paths[0]) and os.path.exists(self.paths[1]))):
                 make_dirs(self.paths)
             for i in range(len(self.paths)):
@@ -121,17 +124,17 @@ class Dataloader():
                     img = Image.fromarray(dataToWrite[i][index])
                     img_name =  self.paths[i] + str(index) + ".png"
                     img.save( img_name)
-                print("Done!")
-            print("Writing csv files for labels...")
+                print("DATALOADER: Done!")
+            print("DATALOADER: Writing csv files for labels...")
             with open('dataset/labels_train.csv', 'w', newline='') as csvfile:
                 spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
                 spamwriter.writerow(dataToWrite[2])
             with open('dataset/labels_test.csv', 'w', newline='') as csvfile:
                 spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
                 spamwriter.writerow(dataToWrite[3])
-            print("Done!")
+            print("DATALOADER: Done!")
 
         else:
-            print("Found existing files... skipping save!")
+            print("DATALOADER: Found existing data, no need to save again!")
     def get(self):
         return self.data
