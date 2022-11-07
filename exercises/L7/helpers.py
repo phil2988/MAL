@@ -1,13 +1,11 @@
 import csv
 from keras.datasets import mnist
-from sklearn.datasets import fetch_openml
-from importlib.resources import path
-import tensorflow
 from PIL import Image
-import pandas as pd
 import os
 import numpy as np
 import threading 
+import keras.api._v2.keras as keras
+from functools import partial
 
 def getMnistDataSet():
     return mnist.load_data()
@@ -163,3 +161,32 @@ class Dataloader():
             print("DATALOADER: Found existing data, no need to save again!")
     def get(self):
         return self.data
+
+DefaultConv2D = partial(keras.layers.Conv2D, kernel_size=3, strides=1, padding="SAME", use_bias=False)
+
+class ResidualUnit(keras.layers.Layer):
+    def __init__(self, filters, strides=1, activation="relu", **kwargs):
+        super().__init__(**kwargs)
+        self.activation = keras.activations.get(activation)
+        self.main_layers = [
+            DefaultConv2D(filters, strides=strides),
+            keras.layers.BatchNormalization(),
+            self.activation,
+            DefaultConv2D(filters),
+            keras.layers.BatchNormalization()
+        ]
+        self.skip_layers = []
+        if strides > 1:
+            self.skip_layers = [
+                DefaultConv2D(filters, kernel_size=1, strides=strides),
+                keras.layers.BatchNormalization()
+            ]
+
+    def call(self, inputs):
+        Z = inputs
+        for layer in self.main_layers:
+            Z = layer(Z)
+        skip_Z = inputs
+        for layer in self.skip_layers:
+            skip_Z = layer(skip_Z)
+        return self.activation(Z + skip_Z)
