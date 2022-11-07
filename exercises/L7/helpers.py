@@ -40,66 +40,66 @@ class Dataloader():
 
         if(not file):
             def download():
-                self.data = fetch_openml('mnist_784', cache=False) 
+                self.data = mnist.load_data() 
 
-            print("DATALOADER: Did not find data. Downloading it now...")
+            print("DATALOADER: Did not find local data. Downloading it now...")
             mnistThread = threading.Thread(download())
             mnistThread.start()
             mnistThread.join()            
 
             print("DATALOADER: Done!")
+        else:
+            print("DATALOADER: Files found in dataset folder. Skipping download")
+            make_dirs(self.paths)
+            def tf1(): 
+                for _, __, files in os.walk(self.paths[0]):
+                    for file in files:
+                        X_train.append(np.array(Image.open(self.paths[0] + "/" + file)))
+                print("DATALOADER: Done reading training data")
+            def tf2():
+                for _, __, files in os.walk(self.paths[1]):
+                    for file in files:
+                        X_test.append(np.array(Image.open(self.paths[1] + "/" + file)))
+                print("DATALOADER: Done reading testing data")
 
-        print("DATALOADER: Files found in dataset folder. Skipping download")        
-        print("DATALOADER: Reading data from pc...")
+            def tf3():
+                with open("dataset/labels_train.csv", "w+") as file:
+                    for row in csv.reader(file, delimiter=" "):
+                        y_train.extend(row)
+                with open("dataset/labels_test.csv", "w+") as file:
+                    for row in csv.reader(file, delimiter=" "):
+                        y_test.extend(row)
+                print("DATALOADER: Done reading labels")
 
-        def tf1(): 
-            for _, __, files in os.walk(self.paths[0]):
-                for file in files:
-                    X_train.append(np.array(Image.open(self.paths[0] + "/" + file)))
-            print("DATALOADER: Done reading training data")
-        def tf2():
-            for _, __, files in os.walk(self.paths[1]):
-                for file in files:
-                    X_test.append(np.array(Image.open(self.paths[1] + "/" + file)))
-            print("DATALOADER: Done reading testing data")
-
-        def tf3():
-            with open("dataset/labels_train.csv") as file:
-                for row in csv.reader(file, delimiter=" "):
-                    y_train.extend(row)
-            with open("dataset/labels_test.csv") as file:
-                for row in csv.reader(file, delimiter=" "):
-                    y_test.extend(row)
-            print("DATALOADER: Done reading labels")
-
-        threads = [
-            threading.Thread(tf1()), 
-            threading.Thread(tf2()), 
-            threading.Thread(tf3())
-        ]
-
-        print("DATALOADER: Starting threads to read data...")
-        for thread in threads:
-            thread.start()
-        for thread in threads:
-            thread.join()
-
-        print("DATALOADER: Done reading!")
-        
-        assert(len(X_train) == len(y_train) and len(X_train) == len(y_train))
-        self.data = [
-            [
-                X_train,
-                y_train
-            ], 
-            [     
-                X_test,
-                y_test
+            threads = [
+                threading.Thread(tf1()), 
+                threading.Thread(tf2()), 
+                threading.Thread(tf3())
             ]
-        ]
+
+            print("DATALOADER: Starting threads to read data...")
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.join()
+
+            print("DATALOADER: Done reading!")
+            
+            assert(len(X_train) == len(y_train) and len(X_train) == len(y_train))
+            print("DATALOADER: Loading data into dataloader...")
+            self.data = [
+                [
+                    X_train,
+                    y_train
+                ], 
+                [     
+                    X_test,
+                    y_test
+                ]
+            ]
 
     def save(self):
-        # Load MNIST dataset
+        # Check if already saved
         file_dir_name = str(self.paths[0] + "/0.png")
         file = os.path.exists(file_dir_name)
         if(not file):
@@ -122,7 +122,7 @@ class Dataloader():
                 print("Writing data to: ", self.paths[i])
                 for index in range(len(dataToWrite[i])):
                     img = Image.fromarray(dataToWrite[i][index])
-                    img_name =  self.paths[i] + str(index) + ".png"
+                    img_name =  self.paths[i] + "/" + str(index) + ".png"
                     img.save( img_name)
                 print("DATALOADER: Done!")
             print("DATALOADER: Writing csv files for labels...")
