@@ -51,33 +51,36 @@ class Dataloader():
         else:
             print("DATALOADER: Files found in dataset folder. Skipping download")
             make_dirs(self.paths)
-            def tf1(): 
+            def tf1():
+                print("Reading data from: ", self.paths[0])
                 for _, __, files in os.walk(self.paths[0]):
                     for file in files:
                         X_train.append(np.array(Image.open(self.paths[0] + "/" + file)))
                 print("DATALOADER: Done reading training data")
             def tf2():
+                print("Reading data from: ", self.paths[1])
                 for _, __, files in os.walk(self.paths[1]):
                     for file in files:
                         X_test.append(np.array(Image.open(self.paths[1] + "/" + file)))
                 print("DATALOADER: Done reading testing data")
 
             def tf3():
-                with open("dataset/labels_train.csv", "w+") as file:
+                with open("dataset/labels_train.csv", "r+") as file:
                     for row in csv.reader(file, delimiter=" "):
                         y_train.extend(row)
-                with open("dataset/labels_test.csv", "w+") as file:
+                with open("dataset/labels_test.csv", "r+") as file:
                     for row in csv.reader(file, delimiter=" "):
                         y_test.extend(row)
                 print("DATALOADER: Done reading labels")
 
             threads = [
-                threading.Thread(tf1()), 
+                threading.Thread(tf3()),
                 threading.Thread(tf2()), 
-                threading.Thread(tf3())
+                threading.Thread(tf1()), 
             ]
 
-            print("DATALOADER: Starting threads to read data...")
+            print("DATALOADER: Starting reading of data...")
+
             for thread in threads:
                 thread.start()
             for thread in threads:
@@ -115,23 +118,45 @@ class Dataloader():
 
             assert(len(data_test) == len(labels_test) and len(data_train) == len(labels_train))
 
-            print("DATALOADER: Writing data to files...")
             if(not(os.path.exists(self.paths[0]) and os.path.exists(self.paths[1]))):
                 make_dirs(self.paths)
-            for i in range(len(self.paths)):
-                print("Writing data to: ", self.paths[i])
-                for index in range(len(dataToWrite[i])):
-                    img = Image.fromarray(dataToWrite[i][index])
-                    img_name =  self.paths[i] + "/" + str(index) + ".png"
+            def tf1():
+                print("Writing data to: ", self.paths[0])
+                for index in range(len(dataToWrite[0])):
+                    img = Image.fromarray(dataToWrite[0][index])
+                    img_name =  self.paths[0] + "/" + str(index) + ".png"
                     img.save( img_name)
-                print("DATALOADER: Done!")
-            print("DATALOADER: Writing csv files for labels...")
-            with open('dataset/labels_train.csv', 'w', newline='') as csvfile:
-                spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                spamwriter.writerow(dataToWrite[2])
-            with open('dataset/labels_test.csv', 'w', newline='') as csvfile:
-                spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                spamwriter.writerow(dataToWrite[3])
+                print("Done writing data to: ", self.paths[1])
+
+            def tf2():
+                print("Writing data to: ", self.paths[1])
+                for index in range(len(dataToWrite[1])):
+                    img = Image.fromarray(dataToWrite[1][index])
+                    img_name =  self.paths[1] + "/" + str(index) + ".png"
+                    img.save( img_name)
+                print("Done writing data to: ", self.paths[1])
+                
+            def tf3():
+                with open('dataset/labels_train.csv', 'w', newline='') as csvfile:
+                    spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                    spamwriter.writerow(dataToWrite[2])
+                with open('dataset/labels_test.csv', 'w', newline='') as csvfile:
+                    spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                    spamwriter.writerow(dataToWrite[3])
+                print("DATALOADER: Done writing labels")
+            
+            threads = [
+                threading.Thread(tf3()),
+                threading.Thread(tf2()),
+                threading.Thread(tf1()), 
+            ]
+            print("DATALOADER: Starting writing to files...")
+
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.join()
+
             print("DATALOADER: Done!")
 
         else:
