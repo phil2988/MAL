@@ -6,6 +6,9 @@ import numpy as np
 import threading 
 import keras.api._v2.keras as keras
 from functools import partial
+import matplotlib.pyplot as plt
+
+
 
 def getMnistDataSet():
     return mnist.load_data()
@@ -191,13 +194,13 @@ class ResidualUnit(keras.layers.Layer):
             skip_Z = layer(skip_Z)
         return self.activation(Z + skip_Z)
 
-def compileFitAndPredict(X_train, y_train, X_test, y_test, model: keras.models.Sequential, loss = "sparse_categorical_crossentropy", optimizer = "adam"):
+def compileFitAndPredict(X_train, y_train, X_test, y_test, model: keras.models.Sequential, loss, optimizer, epochs=15):
     print("Compiling model...")
     model.compile(loss=loss,  optimizer=optimizer, metrics=["accuracy"])
     print("Model compiled!")
     print("=========================================================")
     print("Fitting model...")
-    hist = model.fit(X_train, y_train, epochs=5, batch_size=100, validation_data=(X_test, y_test))
+    hist = model.fit(X_train, y_train, epochs=epochs, batch_size=100, validation_data=(X_test, y_test))
     print("Model fitted!")
     print("=========================================================")
     print("Predicting with model...")
@@ -217,5 +220,12 @@ def compileFitAndPredict(X_train, y_train, X_test, y_test, model: keras.models.S
     for i in range(len(testIndexes)):
         highest = np.argmax(predictions[testIndexes[i]])
         print(f"Prediction: {highest}. Actual value: {y_test[testIndexes[i]]}")
-
     print("=========================================================")
+
+
+    plt.plot(range(0, epochs), hist.history['accuracy'], label="Accuracy")
+    plt.plot(range(0, epochs), hist.history['val_accuracy'], label="validation set accuracy")
+
+    # plt.plot(range(0, epochs), hist.history['accuracy'], label= loss + " - accuracy")
+    # plt.plot(range(0, epochs), hist.history['val_accuracy'], label= loss + " - val_accuracy")
+
