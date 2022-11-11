@@ -56,7 +56,7 @@ class Dataloader():
                         X_train.append(np.array(Image.open(self.paths[0] + "/" + file)))
                 print("DATALOADER: Done reading training data")
             def tf2():
-                print("Reading data from: ", self.paths[1])
+                print("DATALOADER: Reading data from: ", self.paths[1])
                 for _, __, files in os.walk(self.paths[1]):
                     for file in files:
                         X_test.append(np.array(Image.open(self.paths[1] + "/" + file)))
@@ -119,12 +119,12 @@ class Dataloader():
             if(not(os.path.exists(self.paths[0]) and os.path.exists(self.paths[1]))):
                 make_dirs(self.paths)
             def tf1():
-                print("Writing data to: ", self.paths[0])
+                print("DATALOADER: Writing data to: ", self.paths[0])
                 for index in range(len(dataToWrite[0])):
                     img = Image.fromarray(dataToWrite[0][index])
                     img_name =  self.paths[0] + "/" + str(index) + ".png"
                     img.save( img_name)
-                print("Done writing data to: ", self.paths[1])
+                print("DATALOADER: Done writing data to: ", self.paths[1])
 
             def tf2():
                 print("Writing data to: ", self.paths[1])
@@ -132,7 +132,7 @@ class Dataloader():
                     img = Image.fromarray(dataToWrite[1][index])
                     img_name =  self.paths[1] + "/" + str(index) + ".png"
                     img.save( img_name)
-                print("Done writing data to: ", self.paths[1])
+                print("DATALOADER: Done writing data to: ", self.paths[1])
                 
             def tf3():
                 with open('dataset/labels_train.csv', 'w', newline='') as csvfile:
@@ -190,3 +190,32 @@ class ResidualUnit(keras.layers.Layer):
         for layer in self.skip_layers:
             skip_Z = layer(skip_Z)
         return self.activation(Z + skip_Z)
+
+def compileFitAndPredict(X_train, y_train, X_test, y_test, model: keras.models.Sequential, loss = "sparse_categorical_crossentropy", optimizer = "adam"):
+    print("Compiling model...")
+    model.compile(loss=loss,  optimizer=optimizer, metrics=["accuracy"])
+    print("Model compiled!")
+    print("=========================================================")
+    print("Fitting model...")
+    hist = model.fit(X_train, y_train, epochs=5, batch_size=100, validation_data=(X_test, y_test))
+    print("Model fitted!")
+    print("=========================================================")
+    print("Predicting with model...")
+    predictions = model.predict(X_test)
+    print("Done!")
+    print("=========================================================")
+    print('|FIT RESULTS|')
+    print('Fit loss: ', hist.history['loss'] )
+    print('Fit acc: ', hist.history['accuracy'] )
+    print('Fit val_loss: ', hist.history['val_loss'] )
+    print('Fit val_acc: ', hist.history['val_accuracy'] )
+    print("=========================================================")
+    print("Testing model....")
+
+    testIndexes = [142, 1200, 2412, 6623, 9552, 5522, 144, 402, 1422]
+
+    for i in range(len(testIndexes)):
+        highest = np.argmax(predictions[testIndexes[i]])
+        print(f"Prediction: {highest}. Actual value: {y_test[testIndexes[i]]}")
+
+    print("=========================================================")

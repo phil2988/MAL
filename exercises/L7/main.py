@@ -1,10 +1,11 @@
-from helpers import getMnistDataSet, Dataloader, ResidualUnit, DefaultConv2D
+from helpers import getMnistDataSet, Dataloader, ResidualUnit, DefaultConv2D, compileFitAndPredict
 import numpy as np
 import keras.api._v2.keras as keras
 
 print("=========================================================")
+dl = Dataloader('dataset/train', 'dataset/test')
 
-(X_train, y_train), (X_test, y_test) = Dataloader('dataset/train', 'dataset/test').get()
+(X_train, y_train), (X_test, y_test) = dl.get()
 
 print("=========================================================")
 
@@ -27,33 +28,12 @@ model.add(keras.layers.GlobalAvgPool2D())
 model.add(keras.layers.Flatten())
 model.add(keras.layers.Dense(10, activation="softmax"))
 
+
 print("Model created!")
 print("=========================================================")
-print("Compiling model...")
-model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=["accuracy"])
-print("Model compiled!")
-print("=========================================================")
-print("Fitting model...")
-hist = model.fit(X_train, y_train, epochs=5, batch_size=100, validation_data=(X_test, y_test))
-print("Model fitted!")
-print("=========================================================")
-print("Predicting with model...")
-predictions = model.predict(X_test)
-print("Done!")
-print("=========================================================")
-print('|FIT RESULTS|')
-print('Fit loss: ', hist.history['loss'] )
-print('Fit acc: ', hist.history['accuracy'] )
-print('Fit val_loss: ', hist.history['val_loss'] )
-print('Fit val_acc: ', hist.history['val_accuracy'] )
-print("=========================================================")
-print("Testing model....")
 
-testIndexes = [142, 1200, 2412, 6623, 9552, 5522, 144, 402, 1422]
+compileFitAndPredict(X_train, y_train, X_test, y_test, model=model, optimizer="adam")
 
-for i in range(len(testIndexes)):
-    highest = np.argmax(predictions[testIndexes[i]])
-    print(f"Prediction: {highest}. Actual value: {y_test[testIndexes[i]]}")
+compileFitAndPredict(X_train, y_train, X_test, y_test, model=model, optimizer="SGD")
 
-print("=========================================================")
-    
+compileFitAndPredict(X_train, y_train, X_test, y_test, model=model, optimizer="Adadelta")
