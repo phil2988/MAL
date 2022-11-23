@@ -4,8 +4,12 @@ import pandas as pd
 rawData = getAllData()
 cards = getCards(rawData)
 
-minions = removeSpells(cards)
+# Remove entries not being a unit
+units = removeSpells(cards)
 
-healthCostManaCards = [cards["cost"], cards["attack"], cards["health"]]
+# only keep health, attack and cost
+for i in units.columns:
+    if i != "cost" and i != "attack" and i != "health":
+        units = units.drop(i, axis=1)
 
-print()
+print(units)
