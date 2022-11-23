@@ -1,0 +1,6 @@
+[submodule "handson-ml2"]
+	path = handson-ml2
+	url = https://github.com/ageron/handson-ml2.git
+[submodule "GITMAL"]
+	path = GITMAL
+	url = https://gitlab.au.dk/au204573/GITMAL.git
