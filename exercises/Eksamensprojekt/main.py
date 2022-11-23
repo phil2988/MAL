@@ -4,4 +4,8 @@ import pandas as pd
 rawData = getAllData()
 cards = getCards(rawData)
 
-print(cards)
+minions = removeSpells(cards)
+
+healthCostManaCards = [cards["cost"], cards["attack"], cards["health"]]
+
+print()

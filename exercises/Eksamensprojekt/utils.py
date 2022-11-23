@@ -32,6 +32,11 @@ def getCards(data=None):
     return pd.DataFrame(data=cards)
 
 
+def removeSpells(cards):
+    assert isinstance(cards, pd.DataFrame)
+    return cards.drop(cards[cards["type"] != "Unit"].index)
+
+
 def getData(data=None):
     if data == None:
         results = []
