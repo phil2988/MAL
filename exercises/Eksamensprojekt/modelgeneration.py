@@ -12,6 +12,7 @@ def generateFakeLabels(size):
 
 
 def createModel():
+    print("Creating model...")
     model = keras.Sequential()
 
     model.add(keras.layers.Dense(3))
@@ -21,8 +22,11 @@ def createModel():
         model.add(keras.layers.Dense(1000))
 
     model.add(keras.layers.Dense(3))
+    print("Done!\n")
 
+    print("Compiling model...")
     model.compile(loss = 'mean_squared_error', optimizer = 'sgd', metrics=["accuracy"])
+    print("Done!\n")
 
     return model
 

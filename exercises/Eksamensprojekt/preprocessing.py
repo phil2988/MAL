@@ -17,6 +17,7 @@ def getAllData():
     return results
 
 def getCardsAsDataFrame(data=None):
+    print("Converting data into card objects...")
     if data == None:
         data = getAllData()
     cards = []
@@ -28,12 +29,18 @@ def getCardsAsDataFrame(data=None):
             j += 1
         print()
         cards.append(card)
+    print("Done! Returning data as DataFrame\n")
     return pd.DataFrame(data=cards)
 
 
 def removeNonUnits(cards):
     assert isinstance(cards, pd.DataFrame)
-    return cards.drop(cards[cards["type"] != "Unit"].index)
+    print("Removing cards which are not a unit...")
+    
+    units = cards.drop(cards[cards["type"] != "Unit"].index) 
+    
+    print("Done!\n")
+    return units
 
 
 def getData(data=None):
@@ -70,7 +77,7 @@ def onlyCostAttackAndHealth(units):
         if i != "cost" and i != "attack" and i != "health":
             units = units.drop(i, axis=1)
     
-    print("Done!")
+    print("Done!\n")
     
     print("Converting string values to int values...")
 
@@ -78,17 +85,22 @@ def onlyCostAttackAndHealth(units):
     units["health"] = units["health"].astype(int)
     units["cost"] = units["cost"].astype(int)
 
-    print("done")
+    print("Done!\n")
 
     return units
 
 def getTrainTestSplit_test(units):
     from sklearn.model_selection import train_test_split
 
+    print("Generating fake labels...")
+    labels = generateFakeLabels(len(units))
+    print("Done!\n")
+
+    print("Splitting X and y into train-test split...")
     X_train, X_test, y_train, y_test = train_test_split(
-        units, 
-        generateFakeLabels(len(units))
+        units, labels
     )
+    print("Done! Returning split as numpy arrays!\n")
 
     X_train = np.array(X_train)
     X_test = np.array(X_test)

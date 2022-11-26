@@ -23,6 +23,7 @@ def outputStringNumberConvert(output):
             return "tempo"
 
 def trainModel(model, X_train, y_train, X_test, y_test):
+    print("Training model...")
     hist = model.fit(
         X_train, 
         y_train, 
@@ -31,6 +32,7 @@ def trainModel(model, X_train, y_train, X_test, y_test):
         validation_data=(X_test, y_test), 
         verbose=1, 
     )
+    print("Done! Returning model and training history!\n")
     return model, hist
 
 
