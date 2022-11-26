@@ -1,15 +1,17 @@
+from modelgeneration import createModel
+from modeltraining import printTrainingResults, trainModel
 from preprocessing import *
-import pandas as pd
 
-rawData = getAllData()
-cards = getCards(rawData)
+cards = getCardsAsDataFrame()
 
-# Remove entries not being a unit
-units = removeSpells(cards)
+units = removeNonUnits(cards)
 
-# only keep health, attack and cost
-for i in units.columns:
-    if i != "cost" and i != "attack" and i != "health":
-        units = units.drop(i, axis=1)
+units = onlyCostAttackAndHealth(units)
 
-print(units)
+X_train, X_test, y_train, y_test = getTrainTestSplit_test(units)
+
+model = createModel()
+
+model, _ = trainModel(model, X_train, y_train, X_test, y_test)
+
+printTrainingResults(model, X_test, y_test)
