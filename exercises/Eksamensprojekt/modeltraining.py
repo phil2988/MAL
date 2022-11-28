@@ -27,7 +27,7 @@ def trainModel(model, X_train, y_train, X_test, y_test):
     hist = model.fit(
         X_train, 
         y_train, 
-        epochs=10, 
+        epochs=30, 
         shuffle=True,
         validation_data=(X_test, y_test), 
         verbose=1, 
