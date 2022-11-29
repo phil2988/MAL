@@ -20,6 +20,15 @@ def getData(data = None):
         return results[1:]
     return data[1:]
 
+def getAttackHealthCost():
+    import csv
+    data = []
+    with open("lor_data.csv", encoding="utf8") as csvfile:
+        reader = csv.reader(csvfile)
+        #data.append(reader[:1])
+        for row in reader:
+            data.append(row)
+
 def getHeaders(data=None):
     if(data == None):
         import csv
@@ -37,8 +46,9 @@ def headerToIndex(label: string, data = None):
     return data[0].index(label)
 
 def getTestTrainSplit(splitSize = 0.7, features = ["attack", "health", "cost", ]):
-    from pandas import pd
-    cards = pd.Dataframe(getData())
+    #from pandas import pd jeg har lige udkommenteret dette og erstattet det med "import pandas as pd"
+    import pandas as pd
+    cards = pd.DataFrame(getData()) #Jeg har lige erstattet Dataframe med DataFrame
     fixedCards = []
         
     labels = getRandomLabels(cards)
@@ -50,3 +60,5 @@ def getRandomLabels(X, labels = ["aggro", "control", "midrange"]):
         from random import randrange
         y.append(labels[randrange(2)])
     return y
+
+
