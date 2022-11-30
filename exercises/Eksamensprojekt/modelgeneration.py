@@ -29,5 +29,3 @@ def createModel():
     print("Done!\n")
 
     return model
-
-
