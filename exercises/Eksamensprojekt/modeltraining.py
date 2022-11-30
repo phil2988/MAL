@@ -1,4 +1,4 @@
-from enum import IntEnum, auto
+from enum import auto
 from strenum import StrEnum
 
 class Outputs(StrEnum):
@@ -22,14 +22,14 @@ def outputStringNumberConvert(output):
         if(output == 2):
             return "tempo"
 
-def trainModel(model, X_train, y_train, X_test, y_test):
+def trainModel(model, X_train, y_train):
     print("Training model...")
     hist = model.fit(
-        X_train, 
-        y_train, 
+        X_train[0:round(len(X_train)*0.6)], 
+        y_train[0:round(len(y_train)*0.6)], 
         epochs=30, 
         shuffle=True,
-        validation_data=(X_test, y_test), 
+        validation_data=(X_train[round(len(X_train)*0.6):], y_train[round(len(y_train)*0.6):]), 
         verbose=1, 
     )
     print("Done! Returning model and training history!\n")

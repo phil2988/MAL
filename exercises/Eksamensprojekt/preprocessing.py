@@ -47,6 +47,7 @@ def getCardsAsDataFrame(data=None):
         print()
         cards.append(card)
     print("Done! Returning data as DataFrame\n")
+    print(pd.DataFrame(data=cards))
     return pd.DataFrame(data=cards)
 
 
@@ -103,7 +104,7 @@ def onlyCostAttackAndHealth(units):
     units["cost"] = units["cost"].astype(int)
 
     print("Done!\n")
-
+    print(units)
     return units
 
 def getTrainTestSplit_test(units):
