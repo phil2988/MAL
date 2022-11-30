@@ -6,7 +6,7 @@ from preprocessing import *
 #from modeltraining import printTrainingResults, trainModel
 
 print("Loading data...")
-cards = pp.getCardsAsDataFrame()
+cards = pp.getCardsAsDataFrameByPath()
 units = pp.removeNonUnits(cards)
 units = pp.onlyCostAttackAndHealth(units)
 

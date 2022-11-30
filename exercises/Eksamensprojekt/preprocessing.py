@@ -15,7 +15,7 @@ def getAllData():
             results.append(row)
     return results
 
-def getCardsAsDataFrame(path):
+def getCardsAsDataFrameByPath(path):
     data = []
     with open(path, encoding="utf8") as csvfile:
         reader = csv.reader(csvfile)  # change contents to floats
@@ -33,21 +33,21 @@ def getCardsAsDataFrame(path):
     print("Done! Returning data as DataFrame\n")
     return pd.DataFrame(data=cards)
 
-# def getCardsAsDataFrame(data=None):
-#     print("Converting data into card objects...")
-#     if data == None:
-#         data = getAllData()
-#     cards = []
-#     for i in data[1:]:
-#         card = {}
-#         j = 0
-#         for k in i:
-#             card.update({data[0][j]: k})
-#             j += 1
-#         print()
-#         cards.append(card)
-#     print("Done! Returning data as DataFrame\n")
-#     return pd.DataFrame(data=cards)
+def getCardsAsDataFrame(data=None):
+    print("Converting data into card objects...")
+    if data == None:
+        data = getAllData()
+    cards = []
+    for i in data[1:]:
+        card = {}
+        j = 0
+        for k in i:
+            card.update({data[0][j]: k})
+            j += 1
+        print()
+        cards.append(card)
+    print("Done! Returning data as DataFrame\n")
+    return pd.DataFrame(data=cards)
 
 
 def removeNonUnits(cards):

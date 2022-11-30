@@ -2,7 +2,7 @@ from modelgeneration import createModel
 from modeltraining import printTrainingResults, trainModel
 from preprocessing import *
 
-cards = getCardsAsDataFrame()
+cards = getCardsAsDataFrameByPath()
 
 units = removeNonUnits(cards)
 

@@ -3,7 +3,7 @@ from tkinter import Tk, _setit, HORIZONTAL, Frame, BOTH, Button, Entry, Label, T
 import os
 import sys
 import traceback
-from preprocessing import getCardsAsDataFrame
+from preprocessing import getCardsAsDataFrameByPath
 
 
 class APP(Frame):
@@ -186,7 +186,7 @@ class APP(Frame):
         
     def load_data(self, path):
         try:
-            self.df = getCardsAsDataFrame(path)
+            self.df = getCardsAsDataFrameByPath(path)
             return True
         except Exception:
             print(traceback.format_exc())
