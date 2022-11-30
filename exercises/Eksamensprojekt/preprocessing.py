@@ -1,6 +1,5 @@
 import string
 from urllib.parse import quote_plus
-import matplotlib.pyplot as plt
 import numpy as np
 import csv
 import pandas as pd
@@ -16,10 +15,13 @@ def getAllData():
             results.append(row)
     return results
 
-def getCardsAsDataFrame(data=None):
-    print("Converting data into card objects...")
-    if data == None:
-        data = getAllData()
+def getCardsAsDataFrame(path):
+    data = []
+    with open(path, encoding="utf8") as csvfile:
+        reader = csv.reader(csvfile)  # change contents to floats
+        for row in reader:  # each row is a list
+            data.append(row)
+
     cards = []
     for i in data[1:]:
         card = {}
@@ -27,10 +29,25 @@ def getCardsAsDataFrame(data=None):
         for k in i:
             card.update({data[0][j]: k})
             j += 1
-        print()
         cards.append(card)
     print("Done! Returning data as DataFrame\n")
     return pd.DataFrame(data=cards)
+
+# def getCardsAsDataFrame(data=None):
+#     print("Converting data into card objects...")
+#     if data == None:
+#         data = getAllData()
+#     cards = []
+#     for i in data[1:]:
+#         card = {}
+#         j = 0
+#         for k in i:
+#             card.update({data[0][j]: k})
+#             j += 1
+#         print()
+#         cards.append(card)
+#     print("Done! Returning data as DataFrame\n")
+#     return pd.DataFrame(data=cards)
 
 
 def removeNonUnits(cards):
