@@ -15,7 +15,10 @@ def getAllData():
             results.append(row)
     return results
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 410806f96cb890c5cf8e85be8ed33798cf309e2f
 def getCardsAsDataFrameByPath(path):
     data = []
     with open(path, encoding="utf8") as csvfile:
@@ -23,6 +26,8 @@ def getCardsAsDataFrameByPath(path):
         for row in reader:  # each row is a list
             data.append(row)
 
+<<<<<<< HEAD
+=======
     cards = []
     for i in data[1:]:
         card = {}
@@ -32,6 +37,23 @@ def getCardsAsDataFrameByPath(path):
             j += 1
         cards.append(card)
     print("Done! Returning data as DataFrame\n")
+    return pd.DataFrame(data=cards)
+
+def getCardsAsDataFrame(data=None):
+    print("Converting data into card objects...")
+    if data == None:
+        data = getAllData()
+>>>>>>> 410806f96cb890c5cf8e85be8ed33798cf309e2f
+    cards = []
+    for i in data[1:]:
+        card = {}
+        j = 0
+        for k in i:
+            card.update({data[0][j]: k})
+            j += 1
+        cards.append(card)
+    print("Done! Returning data as DataFrame\n")
+    print(pd.DataFrame(data=cards))
     return pd.DataFrame(data=cards)
 
 
@@ -102,7 +124,7 @@ def onlyCostAttackAndHealth(units):
     units["cost"] = units["cost"].astype(int)
 
     print("Done!\n")
-
+    print(units)
     return units
 
 

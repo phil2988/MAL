@@ -19,7 +19,7 @@ def createModel():
     model.add(keras.layers.BatchNormalization())
 
     for i in range(0, 10):
-        model.add(keras.layers.Dense(1000))
+        model.add(keras.layers.Dense(10))
 
     model.add(keras.layers.Dense(3))
     print("Done!\n")
@@ -29,5 +29,3 @@ def createModel():
     print("Done!\n")
 
     return model
-
-
