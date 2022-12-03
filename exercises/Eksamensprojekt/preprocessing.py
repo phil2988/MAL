@@ -15,10 +15,7 @@ def getAllData():
             results.append(row)
     return results
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 410806f96cb890c5cf8e85be8ed33798cf309e2f
 def getCardsAsDataFrameByPath(path):
     data = []
     with open(path, encoding="utf8") as csvfile:
@@ -26,8 +23,6 @@ def getCardsAsDataFrameByPath(path):
         for row in reader:  # each row is a list
             data.append(row)
 
-<<<<<<< HEAD
-=======
     cards = []
     for i in data[1:]:
         card = {}
@@ -39,19 +34,17 @@ def getCardsAsDataFrameByPath(path):
     print("Done! Returning data as DataFrame\n")
     return pd.DataFrame(data=cards)
 
-def getCardsAsDataFrame(data=None):
+
+def getCardsAsDataFrame():
+    import os
+
     print("Converting data into card objects...")
-    if data == None:
-        data = getAllData()
->>>>>>> 410806f96cb890c5cf8e85be8ed33798cf309e2f
+
     cards = []
-    for i in data[1:]:
-        card = {}
-        j = 0
-        for k in i:
-            card.update({data[0][j]: k})
-            j += 1
-        cards.append(card)
+    cardsWithLabels = os.walk("labels")
+    for i, entry in cardsWithLabels:
+        print(entry)
+
     print("Done! Returning data as DataFrame\n")
     print(pd.DataFrame(data=cards))
     return pd.DataFrame(data=cards)
@@ -61,12 +54,26 @@ def getCardsAsDataFrame():
     import os
 
     print("Converting data into card objects...")
-    dataWithLabels = os.walk("labels")
-    cards = []
-    for i, entry in dataWithLabels:
+    units = []
+    labels = []
+    i = 0
 
-        print("Done! Returning data as DataFrame\n")
-    return pd.DataFrame(data=cards)
+    for path in os.listdir("labels"):
+        headers = getHeaders()
+        split = path.split(".")
+        if split[1] == "txt":
+            with open("labels/" + path, "r") as labelFile:
+                labels.append(labelFile.readline())
+
+        i += 1
+        if split[1] == "csv":
+            with open("labels/" + path, "r", newline="", encoding="utf-8") as csvFile:
+                unit = {}
+                for attr in csv.reader(csvFile, delimiter=",", quotechar="|"):
+                    unit.update()
+                    print(attr)
+    print("Done! Returning data as DataFrame\n")
+    return pd.DataFrame(data=units), labels
 
 
 def removeNonUnits(cards):
