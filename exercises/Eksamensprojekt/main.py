@@ -2,16 +2,14 @@ from modelgeneration import createModel
 from modeltraining import printTrainingResults, trainModel
 from preprocessing import *
 
-cards = getCardsAsDataFrame()
-
-units = removeNonUnits(cards)
+units, labels = getCardsAsDataFrame()
 
 units = onlyCostAttackAndHealth(units)
 
-X_train, X_test, y_train, y_test = getTrainTestSplit_test(units)
+X_train, X_test, y_train, y_test = getTrainTestSplit(units)
 
 model = createModel()
 
-model, hist = trainModel(model, X_train, y_train)
+model, hist = trainModel(model, X_train, y_train, epochs=50)
 
 printTrainingResults(model, X_test, y_test, hist)

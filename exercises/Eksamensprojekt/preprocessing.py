@@ -57,9 +57,8 @@ def getCardsAsDataFrame():
     units = []
     labels = []
     i = 0
-
+    headers = getHeaders()
     for path in os.listdir("labels"):
-        headers = getHeaders()
         split = path.split(".")
         if split[1] == "txt":
             with open("labels/" + path, "r") as labelFile:
@@ -69,18 +68,22 @@ def getCardsAsDataFrame():
         if split[1] == "csv":
             with open("labels/" + path, "r", newline="", encoding="utf-8") as csvFile:
                 unit = {}
-                for attr in csv.reader(csvFile, delimiter=",", quotechar="|"):
-                    unit.update()
-                    print(attr)
+                _i = 0
+                for attr in csv.reader(csvFile):
+                    unit.update({headers[0][_i]: attr[0]})
+                    _i += 1
+                units.append(unit)
     print("Done! Returning data as DataFrame\n")
-    return pd.DataFrame(data=units), labels
+    return (pd.DataFrame(data=units)), (labels)
 
 
 def removeNonUnits(cards):
+    raise NotImplementedError("This function is no longer necessary")
     assert isinstance(cards, pd.DataFrame)
     print("Removing cards which are not a unit...")
 
     # check if collectible
+    print(cards["type"])
     units = cards.drop(cards[cards["type"] != "Unit"].index)
 
     print("Done!\n")
@@ -131,16 +134,16 @@ def onlyCostAttackAndHealth(units):
     units["cost"] = units["cost"].astype(int)
 
     print("Done!\n")
-    print(units)
     return units
 
 
-def getTrainTestSplit_test(units):
+def getTrainTestSplit(units, labels = None):
     from sklearn.model_selection import train_test_split
 
-    print("Generating fake labels...")
-    labels = generateFakeLabels(len(units))
-    print("Done!\n")
+    if(labels == None):
+        print("No labels were given! Generating fake labels...")
+        labels = generateFakeLabels(len(units))
+        print("Done!\n")
 
     print("Splitting X and y into train-test split...")
     X_train, X_test, y_train, y_test = train_test_split(units, labels)

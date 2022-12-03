@@ -19,13 +19,16 @@ def createModel():
     model.add(keras.layers.BatchNormalization())
 
     for i in range(0, 10):
-        model.add(keras.layers.Dense(10))
+        model.add(keras.layers.Dense(1000))
 
     model.add(keras.layers.Dense(3))
     print("Done!\n")
 
     print("Compiling model...")
-    model.compile(loss = 'mean_squared_error', optimizer = 'sgd', metrics=["accuracy"])
+    model.compile(
+        loss = 'sparse_categorical_crossentropy', 
+        optimizer = keras.optimizers.Adam(learning_rate=1e-3), 
+        metrics=["accuracy"])
     print("Done!\n")
 
     return model

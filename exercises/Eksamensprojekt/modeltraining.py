@@ -22,15 +22,17 @@ def outputStringNumberConvert(output):
         if(output == 2):
             return "tempo"
 
-def trainModel(model, X_train, y_train):
+def trainModel(model, X_train, y_train, epochs = 30, batch_size=32):
     print("Training model...")
     hist = model.fit(
         X_train[0:round(len(X_train)*0.6)], 
         y_train[0:round(len(y_train)*0.6)], 
-        epochs=30, 
+        epochs=epochs, 
         shuffle=True,
         validation_data=(X_train[round(len(X_train)*0.6):], y_train[round(len(y_train)*0.6):]), 
         verbose=1, 
+        batch_size=batch_size,
+        use_multiprocessing= True
     )
     print("Done! Returning model and training history!\n")
     return model, hist
@@ -47,5 +49,7 @@ def printTrainingResults(model, X, y, hist = None):
     if(hist != None):
         import matplotlib.pyplot as plt
         plt.plot(hist.epoch, hist.history["accuracy"])
+        plt.xlabel("Epocs")
+        plt.ylabel("Accuracy")
         plt.show()
     
