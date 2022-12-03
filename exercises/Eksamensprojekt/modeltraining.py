@@ -22,7 +22,7 @@ def outputEnumNumberConvert(output):
         if(output == 2):
             return "tempo"
 
-def trainModel(model, X_train, y_train, epochs = 30, batch_size=32):
+def trainModel(model, X_train, y_train, epochs = 30, batch_size=32, steps_per_epoch=None):
     import numpy as np
 
     assert (type(y_train) == np.ndarray), "Did not get labels as an int. Got type: " + str(type(y_train))
@@ -32,13 +32,15 @@ def trainModel(model, X_train, y_train, epochs = 30, batch_size=32):
     hist = model.fit(
         X_train[0:round(len(X_train)*0.6)], 
         y_train[0:round(len(y_train)*0.6)], 
+        validation_data=(X_train[round(len(X_train)*0.6):], y_train[round(len(y_train)*0.6):]), 
         epochs=epochs, 
         shuffle=True,
-        validation_data=(X_train[round(len(X_train)*0.6):], y_train[round(len(y_train)*0.6):]), 
         verbose=1, 
         batch_size=batch_size,
-        use_multiprocessing= True
+        use_multiprocessing= True,
+        steps_per_epoch=steps_per_epoch
     )
+
     print("Done! Returning model and training history!\n")
     return model, hist
 

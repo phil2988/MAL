@@ -61,7 +61,7 @@ def getCardsAsDataFrame(basePath="labels"):
     labels = []
     i = 0
     headers = getHeaders()
-    for files in os.listdir("labels"):
+    for files in os.listdir(basePath):
         fileType = files.split(".")
         if fileType[1] == "txt":
             with open(basePath + "/" + files, "r") as labelFile:
@@ -69,7 +69,7 @@ def getCardsAsDataFrame(basePath="labels"):
 
         i += 1
         if fileType[1] == "csv":
-            with open("labels/" + files, "r", newline="", encoding="utf-8") as csvFile:
+            with open(basePath + "/" + files, "r", newline="", encoding="utf-8") as csvFile:
                 unit = {}
                 _i = 0
                 for attr in csv.reader(csvFile):
@@ -150,7 +150,7 @@ def getTrainTestSplit(units, labels = None):
         print("Done!\n")
     if(type(labels[0]) == Outputs.aggro or Outputs.control or Outputs.tempo):
         for label in labels:
-            intLabels = np.append( outputEnumNumberConvert(label), intLabels,).astype(int)
+            intLabels = np.append(outputEnumNumberConvert(label), intLabels,).astype(int)
     else:
         intLabels = labels
     X_train, X_test, y_train, y_test = train_test_split(units, intLabels)

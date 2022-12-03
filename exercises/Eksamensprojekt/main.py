@@ -2,7 +2,7 @@ from modelgeneration import createModel
 from modeltraining import printTrainingResults, trainModel
 from preprocessing import *
 
-units, labels = getCardsAsDataFrame()
+units, labels = getCardsAsDataFrame("sigurdslabels")
 
 units = onlyCostAttackAndHealth(units)
 
