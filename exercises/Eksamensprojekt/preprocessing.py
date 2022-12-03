@@ -35,22 +35,24 @@ def getCardsAsDataFrameByPath(path):
     return pd.DataFrame(data=cards)
 
 
-def getCardsAsDataFrame():
-    import os
+def getCardsAsDataFrame(basePath="labels"):
+    """ Reads files from folder and returns units and labels
 
-    print("Converting data into card objects...")
+    Parameters
+    ----------
+    basePath: str
+        Specifies where to look for labels. Default value: "labels"
 
-    cards = []
-    cardsWithLabels = os.walk("labels")
-    for i, entry in cardsWithLabels:
-        print(entry)
+    Returns
+    -------
+    tuple 
+        a tuple containing units and labels, units being a DataFrame and labels being a string array
 
-    print("Done! Returning data as DataFrame\n")
-    print(pd.DataFrame(data=cards))
-    return pd.DataFrame(data=cards)
-
-
-def getCardsAsDataFrame():
+    Example
+    -------
+    >>> units, labels = getCardsAsDataFrame()
+    
+    """
     import os
 
     print("Converting data into card objects...")
@@ -58,15 +60,15 @@ def getCardsAsDataFrame():
     labels = []
     i = 0
     headers = getHeaders()
-    for path in os.listdir("labels"):
-        split = path.split(".")
-        if split[1] == "txt":
-            with open("labels/" + path, "r") as labelFile:
+    for files in os.listdir("labels"):
+        fileType = files.split(".")
+        if fileType[1] == "txt":
+            with open(basePath + "/" + files, "r") as labelFile:
                 labels.append(labelFile.readline())
 
         i += 1
-        if split[1] == "csv":
-            with open("labels/" + path, "r", newline="", encoding="utf-8") as csvFile:
+        if fileType[1] == "csv":
+            with open("labels/" + files, "r", newline="", encoding="utf-8") as csvFile:
                 unit = {}
                 _i = 0
                 for attr in csv.reader(csvFile):
