@@ -4,21 +4,21 @@ import preprocessing as pp
 from preprocessing import *
 #from modelgeneration import createModel
 #from modeltraining import printTrainingResults, trainModel
-import sklearn.cluster
+from sklearn import cluster
 
-print("Loading data...")
-cards = pp.getCardsAsDataFrameByPath()
-units = pp.removeNonUnits(cards)
-units = pp.onlyCostAttackAndHealth(units)
+#print("Loading data...")
+#cards = pp.getCardsAsDataFrameByPath()
+#units = pp.removeNonUnits(cards)
+#units = pp.onlyCostAttackAndHealth(units)
 
-print("Data loaded!")
+#print("Data loaded!")
 
-print("Making training and testing set")
-X_train, X_test, y_train, y_test = getTrainTestSplit_test(units)
+#print("Making training and testing set")
+#X_train, X_test, y_train, y_test = getTrainTestSplit_test(units)
 
-print("Creating models")
+#print("Creating models")
 
-n_clusters = 3
+#n_clusters = 3
 
 #Remove this, it cannot take variable clusters... Test it out first just to see what happens...
 #def CreateMeanShiftModel():
@@ -64,8 +64,17 @@ def CreateBIRCH(): # Unknown if this works
 def CreateSpectralClustering():
     # Parameter search
     # Grid search?
-    model = sklearn.cluster.SpectralClustering(n_clusters = 3)
-    return model
+    #grid_tuned_model = SpectralGridSearch(spectral_tuning_parameters)
+    #Spectral_model = SpectralGridSearch(spectral_tuning_parameters) # Fejl
+    Spectral_model = cluster.SpectralClustering(n_clusters = 3) #Erstatning.. Men vi ved der er 3 clusters
+    return Spectral_model
+
+#def spectral_tuning_parameters():
+#    "n_neighbors": [5, 10, 30, 50],
+#    'eigen_solver': ('None', 'arpack', 'lobpcg', 'amg'),
+#    'n_init': [30, 50, 100],
+#    'assign_labels': ('kmeans', 'discretize', 'cluster_qr')
+
 
 def SpectralGridSearch():
     s = s
