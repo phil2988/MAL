@@ -1,9 +1,10 @@
 import preprocessing as pp
-from modelgeneration import createModel
-from modeltraining import printTrainingResults, trainModel
+#from modelgeneration import createModel
+#from modeltraining import printTrainingResults, trainModel
 from preprocessing import *
 #from modelgeneration import createModel
 #from modeltraining import printTrainingResults, trainModel
+import sklearn.cluster
 
 print("Loading data...")
 cards = pp.getCardsAsDataFrameByPath()
@@ -32,11 +33,11 @@ n_clusters = 3
 # Men det giver første sådan rigtig mening at kigge på når man anvender alle dimensionerne...
 # Prøv at lavet det og se om man kan se noget som helst
 
-def CreateKMeansModel():
+def CreateKMeansModel(): #Den her
     model = 0
     return model
 
-def CreateHierarchicalClustering():
+def CreateHierarchicalClustering(): #Den her
     model = 0
     return model
 
@@ -63,8 +64,11 @@ def CreateBIRCH(): # Unknown if this works
 def CreateSpectralClustering():
     # Parameter search
     # Grid search?
-    model = 0
+    model = sklearn.cluster.SpectralClustering(n_clusters = 3)
     return model
+
+def SpectralGridSearch():
+    s = s
 
 # Træn modellerne
 # Plot dataen
