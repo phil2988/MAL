@@ -1,5 +1,5 @@
 import preprocessing as pp
-from modelgeneration import createModel
+from modelgeneration import createSequentialModel
 from modeltraining import printTrainingResults, trainModel
 from preprocessing import *
 

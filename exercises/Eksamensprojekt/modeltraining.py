@@ -44,7 +44,6 @@ def trainModel(model, X_train, y_train, epochs = 30, batch_size=32, steps_per_ep
     print("Done! Returning model and training history!\n")
     return model, hist
 
-
 def printTrainingResults(model, X, y, hist = None):
     print("Evaluating the model...")
     history = model.evaluate(X, y)
@@ -53,6 +52,7 @@ def printTrainingResults(model, X, y, hist = None):
     print("Best Loss: ", history[0])
     print("===================================")
 
+    print(model.predict(X))
     if(hist != None):
         import matplotlib.pyplot as plt
         plt.plot(hist.epoch, hist.history["accuracy"])
