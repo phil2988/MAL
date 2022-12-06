@@ -56,7 +56,7 @@ def getCardsAsDataFrame(basePath="labels"):
     """
     import os
 
-    print("Converting data into card objects...")
+    #print("Converting data into card objects...")
     units = []
     labels = []
     i = 0
@@ -76,7 +76,7 @@ def getCardsAsDataFrame(basePath="labels"):
                     unit.update({headers[0][_i]: attr[0]})
                     _i += 1
                 units.append(unit)
-    print("Done! Returning data as DataFrame\n")
+    #print("Done! Returning data as DataFrame\n")
     return (pd.DataFrame(data=units)), (labels)
 
 
@@ -122,21 +122,21 @@ def headerToIndex(label: string, data=None):
 
 
 def onlyCostAttackAndHealth(units):
-    print("Isolating cost, attack and health...")
+    #print("Isolating cost, attack and health...")
 
     for i in units.columns:
         if i != "cost" and i != "attack" and i != "health":
             units = units.drop(i, axis=1)
 
-    print("Done!\n")
+    #print("Done!\n")
 
-    print("Converting string values to int values...")
+    #print("Converting string values to int values...")
 
     units["attack"] = units["attack"].astype(int)
     units["health"] = units["health"].astype(int)
     units["cost"] = units["cost"].astype(int)
 
-    print("Done!\n")
+    #print("Done!\n")
     return units
 
 
@@ -154,8 +154,8 @@ def getTrainTestSplit(units, labels = None):
     else:
         intLabels = labels
     X_train, X_test, y_train, y_test = train_test_split(units, intLabels)
-    print("Splitting X and y into train-test split...")
-    print("Done! Returning split as numpy arrays!\n")
+    #print("Splitting X and y into train-test split...")
+    #print("Done! Returning split as numpy arrays!\n")
 
     X_train = np.array(X_train)
     X_test = np.array(X_test)

@@ -6,6 +6,7 @@ from modeltraining import printTrainingResults, trainModel
 from preprocessing import *
 #from modelgeneration import createModel
 #from modeltraining import printTrainingResults, trainModel
+import sklearn
 from sklearn import cluster
 
 #print("Loading data...")
@@ -67,19 +68,17 @@ def CreateSpectralClustering():
     # Parameter search
     # Grid search?
     #grid_tuned_model = SpectralGridSearch(spectral_tuning_parameters)
-    #Spectral_model = SpectralGridSearch(spectral_tuning_parameters) # Fejl
-    Spectral_model = cluster.SpectralClustering(n_clusters = 3) #Erstatning.. Men vi ved der er 3 clusters
+    Spectral_model = cluster.SpectralClustering(n_clusters = 3, affinity='nearest_neighbors')
+    #Spectral_model = cluster.SpectralClustering(n_clusters = 3, affinity='nearest_neighbors')
+    #spooky_model = sklearn.model_selection.GridSearchCV(Spectral_model, param_grid = spectral_tuning_parameters())
     return Spectral_model
 
-#def spectral_tuning_parameters():
-#    "n_neighbors": [5, 10, 30, 50],
-#    'eigen_solver': ('None', 'arpack', 'lobpcg', 'amg'),
-#    'n_init': [30, 50, 100],
-#    'assign_labels': ('kmeans', 'discretize', 'cluster_qr')
-
-
-def SpectralGridSearch():
-    s = s
+def spectral_tuning_parameters():
+    return({
+    "n_neighbors": [5, 10, 30, 50],
+    'eigen_solver': ('None', 'arpack', 'lobpcg', 'amg'),
+    'n_init': [30, 50, 100],
+    'assign_labels': ('kmeans', 'discretize', 'cluster_qr')})
 
 # Træn modellerne
 # Plot dataen
