@@ -18,7 +18,8 @@ def createSequentialModel(
     hiddenlayerAmount = 10,
     loss = keras.losses.SparseCategoricalCrossentropy(),
     optimizer = keras.optimizers.Adam(),
-    metrics = ["accuracy"]
+    metrics = ["accuracy"],
+    neuronActivationFunc = "tanh"
 ):
     print("Creating model...")
     model = keras.Sequential()
@@ -27,7 +28,7 @@ def createSequentialModel(
     model.add(keras.layers.BatchNormalization())
 
     for _ in range(0, hiddenlayerAmount):
-        model.add(keras.layers.Dense(hiddenlayerSize))
+        model.add(keras.layers.Dense(hiddenlayerSize, activation=neuronActivationFunc))
 
     model.add(keras.layers.Dense(outputSize))
     print("Done!\n")
@@ -43,30 +44,60 @@ def createSequentialModel(
 
 def doGridSearchCVWithSequentialModel(X_train, y_train):
     from scikeras.wrappers import KerasClassifier
-    from sklearn.model_selection import GridSearchCV
+    from sklearn.model_selection import RandomizedSearchCV
 
-    model = KerasClassifier(model=createModel, loss="binary_crossentropy", epochs=50)
+    model = KerasClassifier(model=createModel, epochs=50)
     
-    learn_rate = [0.001, 0.01, 0.1, 0.2, 0.3]
-    
-    neurons = [10, 25, 50, 100, 200, 500]
-    hidden_layer_size= [10, 15, 20]
+    learn_rate = []
+    for i in range(1, 5000, 10):
+        learn_rate.append(i/1000)
 
-    activation = ['softmax', 'softplus', 'relu', 'tanh', 'sigmoid']
-    optimizer = ['SGD', 'Adam', 'Adamax']
+    neurons = range(10, 500)
+    hidden_layer_size= range(5, 50)
+
+    activation = [
+        'softmax', 
+        'softplus', 
+        'relu', 
+        'tanh', 
+        'sigmoid'
+    ]
+    
+    optimizer = [
+        'SGD', 
+        'Adam', 
+        'Adamax',
+    ]
+
+    loss = [
+        "binary_crossentropy", 
+        "categorical_crossentropy", 
+        "sparse_categorical_crossentropy", 
+        "poisson", 
+        "kl_divergence",
+        "mean_squared_error",
+        "mean_absolute_error",
+        "mean_absolute_percentage_error",
+        "mean_squared_logarithmic_error",
+        "cosine_similarity",
+        "huber_loss",
+        "log_cosh"
+    ]
     
     param_grid = dict(
         optimizer__learning_rate = learn_rate, 
         model__activation = activation,
         model__hidden_layer_size=hidden_layer_size,
         model__neurons=neurons,
-        optimizer = optimizer
+        optimizer = optimizer,
+        loss = loss
     )
  
-    grid = GridSearchCV(
+    grid = RandomizedSearchCV(
         estimator=model, 
-        param_grid=param_grid, 
-        n_jobs=-1,
+        param_distributions=param_grid, 
+        n_iter=200,
+        n_jobs=5,
         cv=5
     )
     

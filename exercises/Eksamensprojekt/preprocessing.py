@@ -161,3 +161,12 @@ def getTrainTestSplit(units, labels = None):
     X_test = np.array(X_test)
 
     return X_train, X_test, y_train, y_test
+
+def getLabelBalance(labels):
+    amounts = [0, 0, 0]
+    for label in labels:
+        amounts[outputEnumNumberConvert(label)] += 1
+    print("Label Balance")
+    print(f"Control: {amounts[0]}, Aggro: {amounts[1]}, Tempo: {amounts[2]}")
+
+    return amounts

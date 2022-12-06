@@ -30,15 +30,15 @@ def trainModel(model, X_train, y_train, epochs = 30, batch_size=32, steps_per_ep
 
     print("Training model...")
     hist = model.fit(
-        X_train[0:round(len(X_train)*0.6)], 
-        y_train[0:round(len(y_train)*0.6)], 
-        validation_data=(X_train[round(len(X_train)*0.6):], y_train[round(len(y_train)*0.6):]), 
+        X_train, 
+        y_train,
+        validation_split=0.7,
         epochs=epochs, 
-        shuffle=True,
-        verbose=1, 
+        verbose=0, 
         batch_size=batch_size,
+        steps_per_epoch=steps_per_epoch,
         use_multiprocessing= True,
-        steps_per_epoch=steps_per_epoch
+        workers = 6,
     )
 
     print("Done! Returning model and training history!\n")
@@ -52,11 +52,13 @@ def printTrainingResults(model, X, y, hist = None):
     print("Best Loss: ", history[0])
     print("===================================")
 
-    print(model.predict(X))
+    # pred = model.predict(X)
     if(hist != None):
         import matplotlib.pyplot as plt
-        plt.plot(hist.epoch, hist.history["accuracy"])
+        plt.plot(hist.epoch, hist.history["accuracy"], label="Training set")
+        plt.plot(hist.epoch, hist.history["val_accuracy"], label="Test set")
         plt.xlabel("Epocs")
         plt.ylabel("Accuracy")
+        plt.legend()
         plt.show()
     
