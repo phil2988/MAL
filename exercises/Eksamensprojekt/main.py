@@ -3,22 +3,22 @@ from modeltraining import printTrainingResults, trainModel
 from preprocessing import *
 import keras.api._v2.keras as keras
 
-units, labels = getCardsAsDataFrame("sigurdslabels")
+units, labels = getCardsAsDataFrame("sigurdslabels_done")
 
-getLabelBalance(labels)
+balance = getLabelBalance(labels)
 
 units = onlyCostAttackAndHealth(units)
+
+print3dPlotOfData(units, labels)
 
 X_train, X_test, y_train, y_test = getTrainTestSplit(units, labels)
 
 model = createSequentialModel(
-    optimizer=keras.optimizers.SGD(
-        learning_rate=2.101
-    ),
+    optimizer=keras.optimizers.SGD(learning_rate=2.101),
     loss=keras.losses.MeanAbsolutePercentageError(),
     hiddenlayerSize=9,
     hiddenlayerAmount=474,
-    neuronActivationFunc="tanh"
+    neuronActivationFunc="tanh",
 )
 
 # doGridSearchCVWithSequentialModel(X_train, y_train)

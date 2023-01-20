@@ -37,7 +37,7 @@ def getCardsAsDataFrameByPath(path):
 
 
 def getCardsAsDataFrame(basePath="labels"):
-    """ Reads files from folder and returns units and labels
+    """Reads files from folder and returns units and labels
 
     Parameters
     ----------
@@ -46,13 +46,13 @@ def getCardsAsDataFrame(basePath="labels"):
 
     Returns
     -------
-    tuple 
+    tuple
         a tuple containing units and labels, units being a DataFrame and labels being a string array
 
     Example
     -------
     >>> units, labels = getCardsAsDataFrame()
-    
+
     """
     import os
 
@@ -69,7 +69,9 @@ def getCardsAsDataFrame(basePath="labels"):
 
         i += 1
         if fileType[1] == "csv":
-            with open(basePath + "/" + files, "r", newline="", encoding="utf-8") as csvFile:
+            with open(
+                basePath + "/" + files, "r", newline="", encoding="utf-8"
+            ) as csvFile:
                 unit = {}
                 _i = 0
                 for attr in csv.reader(csvFile):
@@ -140,17 +142,20 @@ def onlyCostAttackAndHealth(units):
     return units
 
 
-def getTrainTestSplit(units, labels = None):
+def getTrainTestSplit(units, labels=None):
     from sklearn.model_selection import train_test_split
 
     intLabels = np.array([])
-    if(labels == None):
+    if labels == None:
         print("No labels were given! Generating fake labels...")
         labels = generateFakeLabels(len(units))
         print("Done!\n")
-    if(type(labels[0]) == Outputs.aggro or Outputs.control or Outputs.tempo):
+    if type(labels[0]) == Outputs.aggro or Outputs.control or Outputs.tempo:
         for label in labels:
-            intLabels = np.append(outputEnumNumberConvert(label), intLabels,).astype(int)
+            intLabels = np.append(
+                outputEnumNumberConvert(label),
+                intLabels,
+            ).astype(int)
     else:
         intLabels = labels
     X_train, X_test, y_train, y_test = train_test_split(units, intLabels)
@@ -162,6 +167,7 @@ def getTrainTestSplit(units, labels = None):
 
     return X_train, X_test, y_train, y_test
 
+
 def getLabelBalance(labels):
     amounts = [0, 0, 0]
     for label in labels:
@@ -170,3 +176,43 @@ def getLabelBalance(labels):
     print(f"Control: {amounts[0]}, Aggro: {amounts[1]}, Tempo: {amounts[2]}")
 
     return amounts
+
+
+def print3dPlotOfData(units, labels):
+    import matplotlib.pyplot as plt
+
+    fig = plt.figure()
+    ax = fig.add_subplot(projection="3d")
+
+    for i in range(0, len(units)):
+        # Data for three-dimensional scattered points
+        if str(labels[i]) == "aggro":
+            ax.scatter(
+                units["health"][i],
+                units["attack"][i],
+                units["cost"][i],
+                s=10,
+                c="r",
+            )
+        if str(labels[i]) == "tempo":
+            ax.scatter(
+                units["health"][i],
+                units["attack"][i],
+                units["cost"][i],
+                s=10,
+                c="g",
+            )
+        if str(labels[i]) == "control":
+            ax.scatter(
+                units["health"][i],
+                units["attack"][i],
+                units["cost"][i],
+                s=10,
+                c="b",
+            )
+
+    ax.set_xlabel("Health")
+    ax.set_ylabel("Attack")
+    ax.set_zlabel("Cost")
+    plt.show()
+    print()
